@@ -159,7 +159,7 @@ class COCO_dataset:
     def get_det_results(self):
         det_file = self.det_file
         if det_file != '':
-            if det_file.endswith('.pkl'):
+            if det_file.endswith('.pkl') or det_file.endswith('.pickle'):
                 with open(det_file, 'rb') as f:
                     det_results = np.asarray(
                         pickle.load(f), dtype=object)  # [(bg + cls), images]
@@ -224,6 +224,7 @@ class COCO_dataset:
             print('There are no annotations in %s.' % name)
             return []
         else:
+	    print(name, self.total_annotations[name.replace('.jpg', '')])
             return self.total_annotations[name.replace('.jpg', '')]
 
     def get_singleImg_dets(self, name):
