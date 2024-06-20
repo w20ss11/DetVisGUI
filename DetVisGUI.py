@@ -49,6 +49,7 @@ def parse_args():
         help='groundtruth box color')
 
     parser.add_argument('--output', default='output', help='image save folder')
+    parser.add_argument('--dataset_type', default='CocoDataset', help='')
 
     args = parser.parse_args()
     return args
@@ -358,9 +359,9 @@ class vis_tool:
             text='Object Class : Score (IoU)')
 
 
-        if cfg.dataset_type == 'VOCDataset':
+        if self.args.dataset_type == 'VOCDataset':
             self.data_info = VOC_dataset(cfg, self.args)
-        elif cfg.dataset_type == 'CocoDataset':
+        elif self.args.dataset_type == 'CocoDataset':
             self.data_info = COCO_dataset(cfg, self.args)
 
         self.info.set('DATASET: {}'.format(self.data_info.dataset))
