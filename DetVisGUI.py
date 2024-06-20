@@ -10,6 +10,7 @@ from tkinter import (END, Button, Checkbutton, E, Entry, IntVar, Label,
 import cv2
 import matplotlib
 import mmcv
+import mmengine
 import numpy as np
 import platform
 import pycocotools.mask as maskUtils
@@ -312,7 +313,8 @@ class vis_tool:
 
     def __init__(self):
         self.args = parse_args()
-        cfg = mmcv.Config.fromfile(self.args.config)
+        # cfg = mmcv.Config.fromfile(self.args.config)
+	cfg = mmengine.Config.fromfile(self.args.config)
         self.window = Tk()
         self.menubar = Menu(self.window)
 
