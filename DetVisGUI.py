@@ -50,6 +50,7 @@ def parse_args():
 
     parser.add_argument('--output', default='output', help='image save folder')
     parser.add_argument('--dataset_type', default='CocoDataset', help='')
+    parser.add_argument('--ret_style', type=int, default=1, help='')
 
     args = parser.parse_args()
     return args
@@ -64,6 +65,7 @@ class COCO_dataset:
         self.det_file = args.det_file
         self.has_anno = not args.no_gt
         self.mask = False
+	self.ret_style = args.ret_style
 
         # according json to get category, image list, and annotations.
         self.category, self.img_list, self.total_annotations, self.cat2idx, \
@@ -73,10 +75,16 @@ class COCO_dataset:
         self.results = self.get_det_results() if self.det_file != '' else None
 
         if self.det_file != '':
-            self.img_det = {
-                self.img_list[i]: self.results[:, i]
-                for i in range(len(self.img_list))
-            }
+	    if self.ret_style == 1:
+                self.img_det = {
+                    self.img_list[i]: self.results[:, i]
+                    for i in range(len(self.img_list))
+                }
+	    elif self.ret_style == 0:
+                self.img_det = {
+                    self.img_list[i]: self.results[i, :]
+                    for i in range(len(self.img_list))
+                }
 
     def parse_json(self, train_anno, has_anno):
         with open(train_anno) as f:
@@ -235,6 +243,7 @@ class VOC_dataset:
             getattr(cfg.data, args.stage).img_prefix, 'JPEGImages')
         self.has_anno = not args.no_gt
         self.mask = False
+	self.ret_style = args.ret_style
 
         # according txt to get image list
         self.img_list = self.get_img_list()
@@ -560,8 +569,10 @@ class vis_tool:
 
 
     def get_iou(self, det):
-
-        iou = np.zeros_like(det)
+        if self.args.ret_style == 1:
+            iou = np.zeros_like(det)
+	elif self.args.ret_style == 0:
+	    iou = np.zeros_like(shape=det.shape[:-1])
         GT = self.data_info.get_singleImg_gt(self.img_name)
         
         for idx, cls_objs in enumerate(det):
