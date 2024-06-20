@@ -1,5 +1,3 @@
-# __author__ = 'ChienHung Chen in Academia Sinica IIS'
-
 import argparse
 import itertools
 import json
